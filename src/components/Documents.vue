@@ -1,5 +1,5 @@
 <template>
-  <Wrapper>
+  <Wrapper v-if="documents.length">
     <template v-slot:header>
       <div class="documents-header">
         <h2 role="button" class="wrapper-title documents-title" @click="sortByName">Document name</h2>
@@ -8,22 +8,29 @@
     </template>
     <template v-slot:content>
       <DocumentItem v-for="({name, date}, key) in documents" :key="key" :name="name" :date="date" />
+      <Pagination :pageLength="Math.floor(documentsLength / pageSize)" />
+      <p v-if="error" class="error">{{error.message}}</p>
     </template>
   </Wrapper>
 </template>
 
 <script>
-import Wrapper from "./pesentation/Wrapper";
-import DocumentItem from "./pesentation/DocumentItem";
+import DocumentItem from "./presentation/DocumentItem";
+import Wrapper from "./presentation/Wrapper";
+import Pagination from "./presentation/Pagination";
 export default {
   name: "Documents",
   components: {
-    Wrapper,
     DocumentItem,
+    Wrapper,
+    Pagination,
   },
   data() {
     return {
       documents: [],
+      documentsLength: null,
+      pageSize: process.env.VUE_APP_DOCUMENTS_SIZE,
+      error: null,
     };
   },
   methods: {
@@ -50,11 +57,18 @@ export default {
   async mounted() {
     const pattern = /\.pdf|\.docx$/;
     const { VUE_APP_DOCUMENTS_ENDPOINT } = process.env;
-    const request = await fetch(VUE_APP_DOCUMENTS_ENDPOINT);
-    const response = await request.json();
-    const { documents } = response;
-    this.documents = documents.filter(({ name }) => pattern.test(name));
-    this.sortByDate();
+    try {
+      const request = await fetch(VUE_APP_DOCUMENTS_ENDPOINT);
+      const response = await request.json();
+      const { documents } = response;
+      this.documentsLength = documents.length;
+      this.documents = documents
+        .filter(({ name }) => pattern.test(name))
+        .slice(0, 6);
+      this.sortByDate();
+    } catch (error) {
+      this.error = error;
+    }
   },
 };
 </script>

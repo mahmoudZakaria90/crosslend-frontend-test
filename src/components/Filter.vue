@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import Wrapper from "./pesentation/Wrapper";
+import Wrapper from "./presentation/Wrapper";
 export default {
   name: "FilterForm",
   components: {

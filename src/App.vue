@@ -1,28 +1,38 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="row">
+    <Documents></Documents>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import Documents from "./components/Documents";
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    Documents,
+  },
+  data() {
+    return {
+      documents: [],
+    };
+  },
+  async mounted() {
+    const request = await fetch(
+      "https://frontend.apply.crosslend.dev/documents.json"
+    );
+    const response = await request.json();
+    const { documents } = response;
+    const filtered = documents.filter((document) => {
+      const dateOnly = document.date.split("T");
+      const startDate = 1491004800000;
+      const endDate = 1510358400000;
+      const dateTimestamp = new Date(dateOnly).getTime();
+      return dateTimestamp >= startDate && dateTimestamp <= endDate;
+    });
+    console.log(filtered);
+  },
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>

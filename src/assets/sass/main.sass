@@ -1,4 +1,33 @@
-import colors
+@import colors
+
+//Reset
+*
+    margin: 0
+    padding: 0
+    box-sizing: border-box
+
+:root
+    font-size: 10px
 
 body
-    // background: black
+    font-family: 'Roboto', 'sans-serif'
+    font-size: 1.4rem
+    font-weight: 500
+    color: $main-color
+    line-height: 1.5
+
+
+.container
+    padding: 0 20px
+
+.row
+    display: flex
+
+.col
+  flex: 1 0
+  padding: 0 10px
+
+.wrapper
+    &-title
+        font-size: inherit
+        margin-bottom: 15px

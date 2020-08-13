@@ -13,11 +13,13 @@
         </div>
       </div>
     </div>
+    <Footer />
   </div>
 </template>
 
 <script>
 import Header from "./components/presentation/Header";
+import Footer from "./components/presentation/Footer";
 import Documents from "./components/Documents";
 import FilterForm from "./components/Filter";
 
@@ -27,6 +29,7 @@ export default {
     Header,
     Documents,
     FilterForm,
+    Footer,
   },
   methods: {
     filterBy() {
@@ -71,11 +74,11 @@ export default {
     width: 50%
     @media(min-width: 769px)
       position: static
-      flex-basis: 40%
-      max-width: 40%
       width: auto
     @media(max-width: 480px)
-      width: 80%
+      width: 70%
+    @media(max-width: 360px)
+      width: 67%
   @media(max-width: 992px)
     flex-basis: 40%
     max-width: 40%

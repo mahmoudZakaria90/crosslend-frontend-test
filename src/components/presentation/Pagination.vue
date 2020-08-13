@@ -1,17 +1,17 @@
 <template>
   <div class="pagination">
     <div class="pagination-group">
-      <button class="pagination-btn">
+      <button class="pagination-btn" @click="firstPage" :disabled="currentPage === 1">
         <FontAwesomeIcon :icon="['fas','angle-double-left']" />
       </button>
-      <button class="pagination-btn" @click="prevPage">
+      <button class="pagination-btn" @click="prevPage" :disabled="this.currentPage === 1">
         <FontAwesomeIcon :icon="['fas','angle-left']" />
       </button>
-      <span class="pagination-status">{{currentPage}} of {{pageLength}}</span>
-      <button class="pagination-btn" @click="nextPage">
+      <span class="pagination-status">{{currentPage}} of {{totalPages}}</span>
+      <button class="pagination-btn" @click="nextPage" :disabled="currentPage === totalPages">
         <FontAwesomeIcon :icon="['fas','angle-right']" />
       </button>
-      <button class="pagination-btn">
+      <button class="pagination-btn" @click="lastPage" :disabled="currentPage === totalPages">
         <FontAwesomeIcon :icon="['fas','angle-double-right']" />
       </button>
     </div>
@@ -23,7 +23,8 @@ import { eventBus } from "../../utils/";
 export default {
   name: "Pagination",
   props: {
-    pageLength: Number,
+    totalPages: Number,
+    documentsLength: Number,
   },
   data() {
     return {
@@ -33,13 +34,22 @@ export default {
     };
   },
   methods: {
+    firstPage() {
+      this.currentPage = 1;
+      this.sliceStart = 0;
+      this.sliceEnd = Number(process.env.VUE_APP_DOCUMENTS_SIZE);
+      eventBus.$emit("updatingPages", {
+        start: this.sliceStart,
+        end: this.sliceEnd,
+      });
+    },
     nextPage() {
       const { VUE_APP_DOCUMENTS_SIZE } = process.env;
-      if (this.currentPage < this.pageLength) {
+      if (this.currentPage < this.totalPages) {
         this.currentPage = this.currentPage + 1;
         this.sliceStart = this.sliceStart + Number(VUE_APP_DOCUMENTS_SIZE);
         this.sliceEnd = this.sliceEnd + Number(VUE_APP_DOCUMENTS_SIZE);
-        eventBus.$emit("nextPage", {
+        eventBus.$emit("updatingPages", {
           start: this.sliceStart,
           end: this.sliceEnd,
         });
@@ -51,15 +61,25 @@ export default {
         this.currentPage = this.currentPage - 1;
         this.sliceStart = this.sliceStart - Number(VUE_APP_DOCUMENTS_SIZE);
         this.sliceEnd = this.sliceEnd - Number(VUE_APP_DOCUMENTS_SIZE);
-        eventBus.$emit("prevPage", {
+        eventBus.$emit("updatingPages", {
           start: this.sliceStart,
           end: this.sliceEnd,
         });
       }
     },
+    lastPage() {
+      const { VUE_APP_DOCUMENTS_SIZE } = process.env;
+      this.currentPage = this.totalPages;
+      this.sliceStart = this.documentsLength - Number(VUE_APP_DOCUMENTS_SIZE);
+      this.sliceEnd = this.documentsLength;
+      eventBus.$emit("updatingPages", {
+        start: this.sliceStart,
+        end: undefined,
+      });
+    },
   },
   mounted() {
-    eventBus.$emit("loadingPages", {
+    eventBus.$emit("updatingPages", {
       start: this.sliceStart,
       end: this.sliceEnd,
     });
@@ -85,4 +105,8 @@ export default {
         background-color: white
         color: $header-bg
         border: 1px solid $header-bg
+        &:disabled
+            border-color: $title-color
+            color: $title-color
+            cursor: default
 </style>

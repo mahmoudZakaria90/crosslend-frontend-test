@@ -1,5 +1,5 @@
 <template>
-  <Wrapper v-if="documentsLength">
+  <Wrapper class="documents-wrapper" v-if="documentsLength">
     <template v-slot:header>
       <div class="documents-header">
         <h2 role="button" class="wrapper-title documents-title" @click="sortByName">
@@ -14,7 +14,10 @@
     </template>
     <template v-slot:content>
       <DocumentItem v-for="({name, date}, key) in documents" :key="key" :name="name" :date="date" />
-      <Pagination :pageLength="Math.round(documentsLength / pageSize)" />
+      <Pagination
+        :totalPages="Math.round(documentsLength / pageSize)"
+        :documentsLength="documentsLength"
+      />
       <p v-if="error" class="error">{{error.message}}</p>
     </template>
   </Wrapper>
@@ -39,7 +42,7 @@ export default {
       documents: [],
       documentsLength: null,
       sortedBy: "date",
-      pageSize: process.env.VUE_APP_DOCUMENTS_SIZE,
+      pageSize: Number(process.env.VUE_APP_DOCUMENTS_SIZE),
       error: null,
     };
   },
@@ -81,15 +84,7 @@ export default {
 
       const filteredDocs = documents.filter(({ name }) => pattern.test(name));
       this.documentsLength = filteredDocs.length;
-      eventBus.$on("loadingPages", ({ start, end }) => {
-        this.documents = filteredDocs.slice(start, end);
-        this.sortByDate();
-      });
-      eventBus.$on("nextPage", ({ start, end }) => {
-        this.documents = filteredDocs.slice(start, end);
-        this.sortByDate();
-      });
-      eventBus.$on("prevPage", ({ start, end }) => {
+      eventBus.$on("updatingPages", ({ start, end }) => {
         this.documents = filteredDocs.slice(start, end);
         this.sortByDate();
       });
@@ -102,6 +97,8 @@ export default {
 
 <style lang="sass" scoped>
 .documents
+  &-wrapper
+    min-height: 301px
   &-header
     display: flex
   &-title

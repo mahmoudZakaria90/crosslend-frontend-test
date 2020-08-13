@@ -2,7 +2,7 @@
   <div>
     <Wrapper v-if="documents.length" class="documents-wrapper">
       <template v-slot:header>
-        <h2 role="button" class="wrapper-title documents-title" @click="sortByName">
+        <h2 role="button" class="wrapper-title documents-title sort-by-name" @click="sortByName">
           Document name
           <FontAwesomeIcon v-if="sortedBy === 'documentName'" :icon="['fas', 'caret-down']" />
         </h2>
@@ -55,7 +55,7 @@ export default {
   },
   methods: {
     sortByDate() {
-      this.documents = this.documents.sort(
+      this.documents.sort(
         ({ name: aName, date: aDate }, { name: bName, date: bDate }) => {
           const aTimeStamp = new Date(aDate.split("T")[0]).getTime();
           const bTimeStamp = new Date(bDate.split("T")[0]).getTime();
@@ -68,7 +68,7 @@ export default {
       this.sortedBy = "date";
     },
     sortByName() {
-      this.documents = this.documents.sort(
+      this.documents.sort(
         ({ name: aName, date: aDate }, { name: bName, date: bDate }) => {
           const aTimeStamp = new Date(aDate.split("T")[0]).getTime();
           const bTimeStamp = new Date(bDate.split("T")[0]).getTime();
@@ -80,34 +80,36 @@ export default {
       );
       this.sortedBy = "documentName";
     },
-    updateDocuments(filteredDocs, start, end) {
-      this.documentsLength = filteredDocs.length;
-      this.documents = filteredDocs.slice(start, end);
+    updateDocuments(docs, start, end) {
+      this.documents = docs.slice(start, end);
       this.sortByDate();
     },
   },
   async mounted() {
-    const pattern = /\.pdf|\.docx$/;
+    const pattern = /\.pdf$|\.docx$/;
     const { VUE_APP_DOCUMENTS_ENDPOINT } = process.env;
     try {
       const request = await fetch(VUE_APP_DOCUMENTS_ENDPOINT);
-      const response = await request.json();
-      const { documents } = response;
+      const { documents } = await request.json();
 
       const filteredDocs = documents.filter(({ name }) => pattern.test(name));
 
+      this.documentsLength = filteredDocs.length;
       this.updateDocuments(filteredDocs, 0, 6);
       eventBus.$on("updatingPages", ({ start, end }) => {
         this.updateDocuments(filteredDocs, start, end);
       });
+
+      //Filters
       eventBus.$on("filter", ({ startTimestamp, endTimestamp }) => {
-        const fromFilter = filteredDocs.filter(({ date }) => {
+        const filteredByForm = documents.filter(({ date }) => {
           const dateTimestamp = new Date(date.split("T")[0]).getTime();
           return (
             dateTimestamp >= startTimestamp && dateTimestamp <= endTimestamp
           );
         });
-        this.updateDocuments(fromFilter, 0, 6);
+        this.documentsLength = filteredByForm.length;
+        this.updateDocuments(filteredByForm, 0, 6);
       });
     } catch (error) {
       this.responseError = error;

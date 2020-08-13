@@ -56,10 +56,16 @@ export default {
   },
   methods: {
     handleSubmit() {
-      const startDateISO = new Date(this.startDate).toISOString();
-      const endDateISO = this.endDate
-        ? new Date(this.endDate).toLocaleDateString()
-        : startDateISO;
+      
+      const startDate = new Date(this.startDate);
+      const endDate = this.endDate ? new Date(this.endDate) : Date.now();
+
+      //Remove timezones
+      startDate.setHours(0, -startDate.getTimezoneOffset(), 0, 0);
+      this.endDate && endDate.setHours(0, -endDate.getTimezoneOffset(), 0, 0);
+
+      const startDateISO = startDate.toISOString();
+      const endDateISO = this.endDate ? endDate.toISOString() : endDate;
       const startTimestamp = new Date(startDateISO).getTime();
       const endTimestamp = new Date(endDateISO).getTime();
       eventBus.$emit("filter", {

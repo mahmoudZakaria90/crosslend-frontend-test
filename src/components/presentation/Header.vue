@@ -63,7 +63,6 @@ export default {
       const request = await fetch(VUE_APP_USER_INFO);
       const response = await request.json();
       const { firstName, lastName } = response.body.User.profile;
-      console.log(response.body);
       this.user.firstName = firstName;
       this.user.lastName = lastName;
     } catch (error) {
@@ -85,7 +84,12 @@ export default {
     color: white
     margin-bottom: 30px
     @media(max-width: 768px)
+        position: fixed
+        top: 0
+        left: 0
+        right: 0
         padding: 6px 20px
+        z-index: 999999
     &-right
         margin-left: auto
         display: flex

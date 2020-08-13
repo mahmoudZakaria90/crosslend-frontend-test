@@ -36,6 +36,7 @@ export default {
     flex-basis: 75%
     overflow: hidden
     text-overflow: ellipsis
+    white-space: nowrap
   &-date
     max-width: 25%
     flex-basis: 25%

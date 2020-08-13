@@ -2,7 +2,12 @@
   <div>
     <Wrapper v-if="documents.length" class="documents-wrapper">
       <template v-slot:header>
-        <h2 role="button" class="wrapper-title documents-title sort-by-name" @click="sortByName">
+        <h2
+          id="sort_by_name"
+          role="button"
+          class="wrapper-title documents-title"
+          @click="sortByName"
+        >
           Document name
           <FontAwesomeIcon v-if="sortedBy === 'documentName'" :icon="['fas', 'caret-down']" />
         </h2>
@@ -24,8 +29,8 @@
         />
       </template>
     </Wrapper>
-    <p v-if="responseError" class="error">{{error.message}}</p>
-    <p v-if="filterError || !documents.length">No documents to fetch.</p>
+    <p v-if="responseError" class="error">{{responseError.message}}</p>
+    <p v-if="!documents.length">No documents to fetch.</p>
   </div>
 </template>
 
@@ -50,7 +55,6 @@ export default {
       sortedBy: "date",
       pageSize: Number(process.env.VUE_APP_DOCUMENTS_SIZE),
       responseError: null,
-      filterError: null,
     };
   },
   methods: {
@@ -100,7 +104,7 @@ export default {
         this.updateDocuments(filteredDocs, start, end);
       });
 
-      //Filters
+      //Date picker Filters
       eventBus.$on("filter", ({ startTimestamp, endTimestamp }) => {
         const filteredByForm = documents.filter(({ date }) => {
           const dateTimestamp = new Date(date.split("T")[0]).getTime();

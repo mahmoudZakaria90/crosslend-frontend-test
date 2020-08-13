@@ -78,12 +78,6 @@ export default {
       });
     },
   },
-  mounted() {
-    eventBus.$emit("updatingPages", {
-      start: this.sliceStart,
-      end: this.sliceEnd,
-    });
-  },
 };
 </script>
 

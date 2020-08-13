@@ -1,26 +1,34 @@
 <template>
-  <Wrapper class="documents-wrapper" v-if="documentsLength">
-    <template v-slot:header>
-      <div class="documents-header">
-        <h2 role="button" class="wrapper-title documents-title" @click="sortByName">
-          Document name
-          <FontAwesomeIcon v-if="sortedBy === 'documentName'" :icon="['fas', 'caret-down']" />
-        </h2>
-        <h2 role="button" class="wrapper-title documents-title" @click="sortByDate">
-          Date
-          <FontAwesomeIcon v-if="sortedBy === 'date'" :icon="['fas', 'caret-down']" />
-        </h2>
-      </div>
-    </template>
-    <template v-slot:content>
-      <DocumentItem v-for="({name, date}, key) in documents" :key="key" :name="name" :date="date" />
-      <Pagination
-        :totalPages="Math.round(documentsLength / pageSize)"
-        :documentsLength="documentsLength"
-      />
-      <p v-if="error" class="error">{{error.message}}</p>
-    </template>
-  </Wrapper>
+  <div>
+    <Wrapper v-if="documents.length" class="documents-wrapper">
+      <template v-slot:header>
+        <div class="documents-header">
+          <h2 role="button" class="wrapper-title documents-title" @click="sortByName">
+            Document name
+            <FontAwesomeIcon v-if="sortedBy === 'documentName'" :icon="['fas', 'caret-down']" />
+          </h2>
+          <h2 role="button" class="wrapper-title documents-title" @click="sortByDate">
+            Date
+            <FontAwesomeIcon v-if="sortedBy === 'date'" :icon="['fas', 'caret-down']" />
+          </h2>
+        </div>
+      </template>
+      <template v-slot:content>
+        <DocumentItem
+          v-for="({name, date}, key) in documents"
+          :key="key"
+          :name="name"
+          :date="date"
+        />
+        <Pagination
+          :totalPages="Math.round(documentsLength / pageSize)"
+          :documentsLength="documentsLength"
+        />
+      </template>
+    </Wrapper>
+    <p v-if="responseError" class="error">{{error.message}}</p>
+    <p v-if="filterError || !documents.length">No documents to fetch.</p>
+  </div>
 </template>
 
 <script>
@@ -43,7 +51,8 @@ export default {
       documentsLength: null,
       sortedBy: "date",
       pageSize: Number(process.env.VUE_APP_DOCUMENTS_SIZE),
-      error: null,
+      responseError: null,
+      filterError: null,
     };
   },
   methods: {
@@ -73,6 +82,10 @@ export default {
       );
       this.sortedBy = "documentName";
     },
+    updateDocuments(filteredDocs, start, end) {
+      this.documents = filteredDocs.slice(start, end);
+      this.sortByDate();
+    },
   },
   async mounted() {
     const pattern = /\.pdf|\.docx$/;
@@ -84,12 +97,12 @@ export default {
 
       const filteredDocs = documents.filter(({ name }) => pattern.test(name));
       this.documentsLength = filteredDocs.length;
+      this.updateDocuments(filteredDocs, 0, 6);
       eventBus.$on("updatingPages", ({ start, end }) => {
-        this.documents = filteredDocs.slice(start, end);
-        this.sortByDate();
+        this.updateDocuments(filteredDocs, start, end);
       });
     } catch (error) {
-      this.error = error;
+      this.responseError = error;
     }
   },
 };

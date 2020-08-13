@@ -16,24 +16,39 @@ body
     color: $main-color
     line-height: 1.5
 
+h1,h2, button
+    font-weight: inherit
 
 .container
     padding: 0 20px
+    position: relative
 
 .row
     display: flex
+    position: relative
 
 .col
   flex: 1 0
   padding: 0 10px
 
-.wrapper
-    &-title
-        font-size: inherit
-        margin-bottom: 15px
-
 .error
     color: red
 
+.vdp-datepicker
+    input
+        width: 100%
+        padding: 0 10px 0 28px
+        height: 50px
+        border-radius: 5px
+        border: 1px solid $btn-border-color
+        cursor: pointer
+        &::placeholder
+            color: $placeholder-color
+        &:disabled
+            background: $title-color
+            cursor: default
 button
+    background-color: transparent
+    border: none
+    color: inherit
     cursor: pointer

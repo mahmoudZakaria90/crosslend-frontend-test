@@ -2,16 +2,14 @@
   <div>
     <Wrapper v-if="documents.length" class="documents-wrapper">
       <template v-slot:header>
-        <div class="documents-header">
-          <h2 role="button" class="wrapper-title documents-title" @click="sortByName">
-            Document name
-            <FontAwesomeIcon v-if="sortedBy === 'documentName'" :icon="['fas', 'caret-down']" />
-          </h2>
-          <h2 role="button" class="wrapper-title documents-title" @click="sortByDate">
-            Date
-            <FontAwesomeIcon v-if="sortedBy === 'date'" :icon="['fas', 'caret-down']" />
-          </h2>
-        </div>
+        <h2 role="button" class="wrapper-title documents-title" @click="sortByName">
+          Document name
+          <FontAwesomeIcon v-if="sortedBy === 'documentName'" :icon="['fas', 'caret-down']" />
+        </h2>
+        <h2 role="button" class="wrapper-title documents-title" @click="sortByDate">
+          Date
+          <FontAwesomeIcon v-if="sortedBy === 'date'" :icon="['fas', 'caret-down']" />
+        </h2>
       </template>
       <template v-slot:content>
         <DocumentItem
@@ -59,8 +57,8 @@ export default {
     sortByDate() {
       this.documents = this.documents.sort(
         ({ name: aName, date: aDate }, { name: bName, date: bDate }) => {
-          const aTimeStamp = new Date(aDate.split("T")).getTime();
-          const bTimeStamp = new Date(bDate.split("T")).getTime();
+          const aTimeStamp = new Date(aDate.split("T")[0]).getTime();
+          const bTimeStamp = new Date(bDate.split("T")[0]).getTime();
           if (aTimeStamp === bTimeStamp) {
             return aName.localeCompare(bName);
           }
@@ -72,8 +70,8 @@ export default {
     sortByName() {
       this.documents = this.documents.sort(
         ({ name: aName, date: aDate }, { name: bName, date: bDate }) => {
-          const aTimeStamp = new Date(aDate.split("T")).getTime();
-          const bTimeStamp = new Date(bDate.split("T")).getTime();
+          const aTimeStamp = new Date(aDate.split("T")[0]).getTime();
+          const bTimeStamp = new Date(bDate.split("T")[0]).getTime();
           if (aName === bName) {
             return bTimeStamp - aTimeStamp;
           }
@@ -83,6 +81,7 @@ export default {
       this.sortedBy = "documentName";
     },
     updateDocuments(filteredDocs, start, end) {
+      this.documentsLength = filteredDocs.length;
       this.documents = filteredDocs.slice(start, end);
       this.sortByDate();
     },
@@ -96,10 +95,19 @@ export default {
       const { documents } = response;
 
       const filteredDocs = documents.filter(({ name }) => pattern.test(name));
-      this.documentsLength = filteredDocs.length;
+
       this.updateDocuments(filteredDocs, 0, 6);
       eventBus.$on("updatingPages", ({ start, end }) => {
         this.updateDocuments(filteredDocs, start, end);
+      });
+      eventBus.$on("filter", ({ startTimestamp, endTimestamp }) => {
+        const fromFilter = filteredDocs.filter(({ date }) => {
+          const dateTimestamp = new Date(date.split("T")[0]).getTime();
+          return (
+            dateTimestamp >= startTimestamp && dateTimestamp <= endTimestamp
+          );
+        });
+        this.updateDocuments(fromFilter, 0, 6);
       });
     } catch (error) {
       this.responseError = error;
@@ -112,8 +120,6 @@ export default {
 .documents
   &-wrapper
     min-height: 301px
-  &-header
-    display: flex
   &-title
     flex: 1 0
     flex-basis: 25%

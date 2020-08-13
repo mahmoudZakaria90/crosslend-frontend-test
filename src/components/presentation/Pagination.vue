@@ -7,7 +7,7 @@
       <button class="pagination-btn" @click="prevPage" :disabled="this.currentPage === 1">
         <FontAwesomeIcon :icon="['fas','angle-left']" />
       </button>
-      <span class="pagination-status">{{currentPage}} of {{totalPages}}</span>
+      <span class="pagination-status">{{currentPage}} of {{finalTotalPages}}</span>
       <button class="pagination-btn" @click="nextPage" :disabled="currentPage === totalPages">
         <FontAwesomeIcon :icon="['fas','angle-right']" />
       </button>
@@ -32,6 +32,11 @@ export default {
       sliceStart: 0,
       sliceEnd: Number(process.env.VUE_APP_DOCUMENTS_SIZE),
     };
+  },
+  computed: {
+    finalTotalPages() {
+      return this.totalPages < 1 ? 1 : this.totalPages;
+    },
   },
   methods: {
     firstPage() {

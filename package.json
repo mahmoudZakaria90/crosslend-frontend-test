@@ -9,13 +9,15 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
+    "@fortawesome/free-regular-svg-icons": "^5.14.0",
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/vue-fontawesome": "^0.1.10",
     "core-js": "^3.6.5",
     "node-sass": "^4.14.1",
     "normalize.css": "^8.0.1",
     "sass-loader": "^9.0.3",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vuejs-datepicker": "^1.6.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.3",

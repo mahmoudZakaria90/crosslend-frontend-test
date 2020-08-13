@@ -1,6 +1,8 @@
 <template>
   <div class="wrapper">
-    <slot name="header"></slot>
+    <div class="wrapper-header">
+      <slot name="header"></slot>
+    </div>
     <slot name="content"></slot>
   </div>
 </template>
@@ -17,4 +19,10 @@ export default {};
   background-color: $wrapper-bg
   border-radius: 5px
   box-shadow: 1px 2px 3px rgba(black, .2)
+  &-header
+    position: relative
+    display: flex
+    margin-bottom: 15px
+  &-title
+    font-size: inherit
 </style>

@@ -34,6 +34,8 @@ export default {
   &-name
     max-width: 75%
     flex-basis: 75%
+    overflow: hidden
+    text-overflow: ellipsis
   &-date
     max-width: 25%
     flex-basis: 25%

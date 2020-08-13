@@ -1,25 +1,30 @@
 <template>
-  <div class="container">
-    <h1>Documents</h1>
-    <button class="filter-by-btn" @click="filterBy">Filter by</button>
-    <div class="row">
-      <div ref="filter" class="col filter">
-        <FilterForm />
-      </div>
-      <div class="col documents">
-        <Documents />
+  <div>
+    <Header />
+    <div class="container">
+      <h1 class="app-title">Documents</h1>
+      <button class="filter-by-btn" @click="filterBy">Filter by</button>
+      <div class="row">
+        <div ref="filter" class="col filter">
+          <FilterForm />
+        </div>
+        <div class="col documents">
+          <Documents />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import Header from "./components/presentation/Header";
 import Documents from "./components/Documents";
 import FilterForm from "./components/Filter";
 
 export default {
   name: "App",
   components: {
+    Header,
     Documents,
     FilterForm,
   },
@@ -35,6 +40,10 @@ export default {
 
 <style lang="sass" scoped>
 @import ./assets/sass/colors
+
+.app
+  &-title
+    margin-bottom: 30px
 
 .documents
   flex-basis: 75%
@@ -75,11 +84,13 @@ export default {
   &-by-btn
     display: none
     position: absolute
-    top: 50%
+    top: 100px
     left: -28px
+    border-radius: 2px 2px 0px 0
     transform: rotate(90deg)
     padding: 6px 15px
     background: $btn-D8-bg
+    box-shadow: 1px 2px 3px rgba(black, .2)
     z-index: 9
     @media(max-width: 768px)
       display: block

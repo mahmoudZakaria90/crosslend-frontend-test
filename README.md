@@ -1,6 +1,6 @@
 # Crosslend-frontend-test
 
-`Note: if end-date is not defined it will reflect to today's date.`
+`Note: if end-date picker is not defined it will reflect to today's date.`
 
 ## Project setup
 ```

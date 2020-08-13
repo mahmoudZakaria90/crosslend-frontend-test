@@ -91,7 +91,7 @@ export default {
   },
   async mounted() {
     const pattern = /\.pdf$|\.docx$/;
-    const { VUE_APP_DOCUMENTS_ENDPOINT } = process.env;
+    const { VUE_APP_DOCUMENTS_ENDPOINT, VUE_APP_DOCUMENTS_SIZE } = process.env;
     try {
       const request = await fetch(VUE_APP_DOCUMENTS_ENDPOINT);
       const { documents } = await request.json();
@@ -99,7 +99,7 @@ export default {
       const filteredDocs = documents.filter(({ name }) => pattern.test(name));
 
       this.documentsLength = filteredDocs.length;
-      this.updateDocuments(filteredDocs, 0, 6);
+      this.updateDocuments(filteredDocs, 0, VUE_APP_DOCUMENTS_SIZE);
       eventBus.$on("updatingPages", ({ start, end }) => {
         this.updateDocuments(filteredDocs, start, end);
       });
@@ -113,7 +113,7 @@ export default {
           );
         });
         this.documentsLength = filteredByForm.length;
-        this.updateDocuments(filteredByForm, 0, 6);
+        this.updateDocuments(filteredByForm, 0, VUE_APP_DOCUMENTS_SIZE);
       });
     } catch (error) {
       this.responseError = error;

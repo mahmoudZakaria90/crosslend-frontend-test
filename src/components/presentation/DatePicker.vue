@@ -17,6 +17,8 @@
 
 <script>
 import Datepicker from "vuejs-datepicker";
+import { eventBus } from "../../utils/";
+
 export default {
   name: "DatePicker",
   components: {
@@ -39,25 +41,28 @@ export default {
       this.$emit("input", this.injectedVal);
     },
   },
+  mounted() {
+    eventBus.$on("reset", () => (this.injectedVal = null));
+  },
 };
 </script>
 
 <style lang="sass" scoped>
 @import ../../assets/sass/colors
 .filter
-    &-date
-        &-wrap
-            position: relative
-            margin-bottom: 10px
-        &-icon
-            position: absolute
-            top: 50%
-            left: 10px
-            transform: translate(0, -50%)
-            z-index: 1
-            pointer-events: none
-        &-chevron
-            right: 10px
-            left: auto
-            color: $btn-bg
+  &-date
+    &-wrap
+      position: relative
+      margin-bottom: 10px
+    &-icon
+      position: absolute
+      top: 50%
+      left: 10px
+      transform: translate(0, -50%)
+      z-index: 1
+      pointer-events: none
+    &-chevron
+      right: 10px
+      left: auto
+      color: $btn-bg
 </style>

@@ -27,6 +27,7 @@
         <button
           class="filter-form-btn filter-form-clear"
           type="reset"
+          @click="handleClear"
           :disabled="!startDate"
         >Clear filters</button>
       </form>
@@ -56,7 +57,6 @@ export default {
   methods: {
     handleSubmit() {
       const startDateISO = new Date(this.startDate).toISOString();
-
       const endDateISO = this.endDate
         ? new Date(this.endDate).toLocaleDateString()
         : startDateISO;
@@ -68,8 +68,7 @@ export default {
       });
     },
     handleClear() {
-      this.startDate = null;
-      this.endDate = null;
+      eventBus.$emit("reset");
     },
     handleClose() {
       this.$parent.$refs.filter.classList.remove("is-shown-sm");

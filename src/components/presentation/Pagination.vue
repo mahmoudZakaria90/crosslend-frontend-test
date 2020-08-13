@@ -8,10 +8,10 @@
         <FontAwesomeIcon :icon="['fas','angle-left']" />
       </button>
       <span class="pagination-status">{{currentPage}} of {{finalTotalPages}}</span>
-      <button class="pagination-btn" @click="nextPage" :disabled="currentPage === totalPages">
+      <button class="pagination-btn" @click="nextPage" :disabled="currentPage === finalTotalPages">
         <FontAwesomeIcon :icon="['fas','angle-right']" />
       </button>
-      <button class="pagination-btn" @click="lastPage" :disabled="currentPage === totalPages">
+      <button class="pagination-btn" @click="lastPage" :disabled="currentPage === finalTotalPages">
         <FontAwesomeIcon :icon="['fas','angle-double-right']" />
       </button>
     </div>

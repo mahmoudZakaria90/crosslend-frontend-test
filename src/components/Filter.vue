@@ -9,12 +9,14 @@
     <template v-slot:content>
       <form action class="filter-form" @submit.prevent="handleSubmit">
         <DatePicker
+          id="start_date"
           v-model="startDate"
           :openDate="new Date('October, 2017')"
           :placeholder="'From'"
           :required="true"
         />
         <DatePicker
+          id="end_date"
           v-model="endDate"
           :placeholder="'To'"
           :openDate="new Date(startDate)"
@@ -56,7 +58,6 @@ export default {
   },
   methods: {
     handleSubmit() {
-      
       const startDate = new Date(this.startDate);
       const endDate = this.endDate ? new Date(this.endDate) : Date.now();
 

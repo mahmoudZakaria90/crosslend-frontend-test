@@ -55,6 +55,7 @@ export default {};
                 text-align: center
                 padding: 0 12px
                 border-left: 1px solid white
+                text-decoration: none
     &-copyright
         margin-right: 12px
         & > p

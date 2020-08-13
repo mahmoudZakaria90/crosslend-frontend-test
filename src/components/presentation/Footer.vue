@@ -41,11 +41,14 @@ export default {};
     @media(max-width: 768px)
         height: auto
         padding: 20px 40px
+    @media(max-width: 600px)
+        position: static
+        margin-top: 30px
     &-links
         list-style: none
         & > li
             display: inline-block
-            @media(max-width: 768px)
+            @media(max-width: 600px)
                 margin-bottom: 10px
                 &:last-of-type
                     margin-bottom: 0

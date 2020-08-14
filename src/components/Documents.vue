@@ -30,7 +30,7 @@
       </template>
     </Wrapper>
     <p v-if="responseError" class="error">{{responseError.message}}</p>
-    <p v-if="!documents.length">No documents to fetch.</p>
+    <p v-if="!documents.length" class="no-docs-text">No documents to fetch.</p>
   </div>
 </template>
 
@@ -134,4 +134,7 @@ export default {
     &:first-of-type
       flex-basis: 75%
       max-width: 75%
+.no-docs-text
+  @media(max-width: 768px)
+    text-align: right
 </style>

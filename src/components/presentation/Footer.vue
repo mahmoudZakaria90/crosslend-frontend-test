@@ -51,7 +51,8 @@ export default {};
         & > li
             display: inline-block
             @media(max-width: 530px)
-                margin-bottom: 10px
+                margin-top: 5px
+                margin-bottom: 5px
                 &:last-of-type
                     margin-bottom: 0
             & > a

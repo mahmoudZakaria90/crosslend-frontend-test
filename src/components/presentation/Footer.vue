@@ -28,6 +28,8 @@ export default {};
 @import ../../assets/sass/colors
 .footer
     position: absolute
+    font-weight: 400
+    font-size: 1.2rem
     bottom: 0
     left: 0
     right: 0
@@ -41,14 +43,14 @@ export default {};
     @media(max-width: 768px)
         height: auto
         padding: 20px 40px
-    @media(max-width: 600px)
+    @media(max-width: 530px)
         position: static
         margin-top: 30px
     &-links
         list-style: none
         & > li
             display: inline-block
-            @media(max-width: 600px)
+            @media(max-width: 530px)
                 margin-bottom: 10px
                 &:last-of-type
                     margin-bottom: 0

@@ -44,7 +44,7 @@ export default {};
         height: auto
         padding: 20px 40px
     @media(max-width: 530px)
-        position: static
+        position: sticky
         margin-top: 30px
     &-links
         list-style: none

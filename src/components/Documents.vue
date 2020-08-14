@@ -1,7 +1,7 @@
 <template>
   <div>
-    <Wrapper v-if="documents.length" class="documents-wrapper">
-      <template v-slot:header>
+    <Wrapper class="documents-wrapper">
+      <template v-slot:header v-if="documents.length">
         <h2
           id="sort_by_name"
           role="button"
@@ -9,14 +9,14 @@
           @click="sortByName"
         >
           Document name
-          <FontAwesomeIcon v-if="sortedBy === 'documentName'" :icon="['fas', 'caret-down']" />
+          <FontAwesomeIcon v-if="sortedBy === 'documentName'" :icon="['fas', `${nameSortToggle ? 'caret-down' : 'caret-up'}`]" />
         </h2>
         <h2 role="button" class="wrapper-title documents-title" @click="sortByDate">
           Date
-          <FontAwesomeIcon v-if="sortedBy === 'date'" :icon="['fas', 'caret-down']" />
+          <FontAwesomeIcon v-if="sortedBy === 'date'" :icon="['fas', `${dateSortToggle ? 'caret-down' : 'caret-up'}`]" />
         </h2>
       </template>
-      <template v-slot:content>
+      <template v-slot:content v-if="documents.length">
         <DocumentItem
           v-for="({name, date}, key) in documents"
           :key="key"
@@ -28,9 +28,9 @@
           :documentsLength="documentsLength"
         />
       </template>
+      <p v-if="responseError" class="error">{{responseError.message}}</p>
+      <p v-if="!documents.length" class="no-docs-text">No documents to fetch.</p>
     </Wrapper>
-    <p v-if="responseError" class="error">{{responseError.message}}</p>
-    <p v-if="!documents.length" class="no-docs-text">No documents to fetch.</p>
   </div>
 </template>
 
@@ -53,12 +53,19 @@ export default {
       documents: [],
       documentsLength: null,
       sortedBy: "date",
+      dateSortToggle: false,
+      nameSortToggle: false,
       pageSize: Number(process.env.VUE_APP_DOCUMENTS_SIZE),
       responseError: null,
     };
   },
   methods: {
     sortByDate() {
+      if(this.dateSortToggle){
+        this.dateSortToggle = false;
+      } else {
+        this.dateSortToggle = true;
+      }
       this.documents.sort(
         ({ name: aName, date: aDate }, { name: bName, date: bDate }) => {
           const aTimeStamp = new Date(aDate.split("T")[0]).getTime();
@@ -66,12 +73,20 @@ export default {
           if (aTimeStamp === bTimeStamp) {
             return aName.localeCompare(bName);
           }
+          if(!this.dateSortToggle){
+            return aTimeStamp - bTimeStamp;
+          }
           return bTimeStamp - aTimeStamp;
         }
       );
       this.sortedBy = "date";
     },
     sortByName() {
+      if(this.nameSortToggle){
+        this.nameSortToggle = false;
+      } else {
+        this.nameSortToggle = true;
+      }
       this.documents.sort(
         ({ name: aName, date: aDate }, { name: bName, date: bDate }) => {
           const aTimeStamp = new Date(aDate.split("T")[0]).getTime();
@@ -79,13 +94,17 @@ export default {
           if (aName === bName) {
             return bTimeStamp - aTimeStamp;
           }
-          return aName.localeCompare(bName);
+          if(this.nameSortToggle){
+            return aName.localeCompare(bName);
+          }
+          return bName.localeCompare(aName);
         }
       );
       this.sortedBy = "documentName";
     },
     updateDocuments(docs, start, end) {
       this.documents = docs.slice(start, end);
+      this.dateSortToggle = false;
       this.sortByDate();
     },
   },

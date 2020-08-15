@@ -3,11 +3,11 @@ import { mount } from '@vue/test-utils'
 import Documents from '../../src/components/Documents.vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCaretDown, faAngleRight, faAngleLeft, faAngleDoubleRight, faAngleDoubleLeft, faChevronDown, faTimes, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faCaretUp, faCaretDown, faAngleRight, faAngleLeft, faAngleDoubleRight, faAngleDoubleLeft, faChevronDown, faTimes, faBars } from '@fortawesome/free-solid-svg-icons'
 import { faCalendar } from '@fortawesome/free-regular-svg-icons'
 
 
-library.add(faCaretDown, faAngleRight, faAngleLeft, faAngleDoubleRight, faAngleDoubleLeft, faCalendar, faChevronDown, faTimes, faBars)
+library.add(faCaretUp,faCaretDown, faAngleRight, faAngleLeft, faAngleDoubleRight, faAngleDoubleLeft, faCalendar, faChevronDown, faTimes, faBars)
 
 Vue.component('FontAwesomeIcon', FontAwesomeIcon)
 

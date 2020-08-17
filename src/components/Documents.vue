@@ -9,7 +9,7 @@
           @click="sortByName"
         >
           Document name
-          <FontAwesomeIcon v-if="sortedBy === 'documentName'" :icon="['fas', `${nameSortToggle ? 'caret-down' : 'caret-up'}`]" />
+          <FontAwesomeIcon v-if="sortedBy === 'documentName'" :icon="['fas', `${nameSortToggle ? 'caret-up' : 'caret-down'}`]" />
         </h2>
         <h2 role="button" class="wrapper-title documents-title" @click="sortByDate">
           Date
@@ -61,6 +61,7 @@ export default {
   },
   methods: {
     sortByDate() {
+      this.nameSortToggle = false;
       if(this.dateSortToggle){
         this.dateSortToggle = false;
       } else {
@@ -82,6 +83,7 @@ export default {
       this.sortedBy = "date";
     },
     sortByName() {
+      this.dateSortToggle = false;
       if(this.nameSortToggle){
         this.nameSortToggle = false;
       } else {

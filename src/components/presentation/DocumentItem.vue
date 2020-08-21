@@ -27,7 +27,7 @@ export default {
   display: flex
   padding: 10px
   background-color: white
-  &:nth-of-type(even)
+  &:nth-of-type(odd)
     background-color: $document-odd-bg
   & > *
     flex: 1 0

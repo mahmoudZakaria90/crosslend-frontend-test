@@ -3,7 +3,9 @@
     <div class="wrapper-header">
       <slot name="header"></slot>
     </div>
-    <slot name="content"></slot>
+    <div>
+      <slot name="content"></slot>
+    </div>
     <slot></slot>
   </div>
 </template>

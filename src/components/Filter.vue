@@ -49,7 +49,6 @@ export default {
     DatePicker,
     Wrapper,
   },
-  props: ["filterRef"],
   data() {
     return {
       startDate: null,

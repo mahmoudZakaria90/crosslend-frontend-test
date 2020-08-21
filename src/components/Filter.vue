@@ -76,6 +76,7 @@ export default {
     },
     handleClear() {
       eventBus.$emit("reset");
+      eventBus.$emit("resetDocuments");
     },
     handleClose() {
       this.$parent.$refs.filter.classList.remove("is-shown-sm");

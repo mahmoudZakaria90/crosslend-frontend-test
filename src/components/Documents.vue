@@ -9,11 +9,17 @@
           @click="sortByName"
         >
           Document name
-          <FontAwesomeIcon v-if="sortedBy === 'documentName'" :icon="['fas', `${nameSortToggle ? 'caret-up' : 'caret-down'}`]" />
+          <FontAwesomeIcon
+            v-if="sortedBy === 'documentName'"
+            :icon="['fas', `${nameSortToggle ? 'caret-up' : 'caret-down'}`]"
+          />
         </h2>
         <h2 role="button" class="wrapper-title documents-title" @click="sortByDate">
           Date
-          <FontAwesomeIcon v-if="sortedBy === 'date'" :icon="['fas', `${dateSortToggle ? 'caret-down' : 'caret-up'}`]" />
+          <FontAwesomeIcon
+            v-if="sortedBy === 'date'"
+            :icon="['fas', `${dateSortToggle ? 'caret-down' : 'caret-up'}`]"
+          />
         </h2>
       </template>
       <template v-slot:content v-if="documents.length">
@@ -24,7 +30,7 @@
           :date="date"
         />
         <Pagination
-          :totalPages="Math.round(documentsLength / pageSize)"
+          :totalPages="Math.ceil(documentsLength / pageSize)"
           :documentsLength="documentsLength"
         />
       </template>
@@ -62,7 +68,7 @@ export default {
   methods: {
     sortByDate() {
       this.nameSortToggle = false;
-      if(this.dateSortToggle){
+      if (this.dateSortToggle) {
         this.dateSortToggle = false;
       } else {
         this.dateSortToggle = true;
@@ -74,7 +80,7 @@ export default {
           if (aTimeStamp === bTimeStamp) {
             return aName.localeCompare(bName);
           }
-          if(!this.dateSortToggle){
+          if (!this.dateSortToggle) {
             return aTimeStamp - bTimeStamp;
           }
           return bTimeStamp - aTimeStamp;
@@ -84,7 +90,7 @@ export default {
     },
     sortByName() {
       this.dateSortToggle = false;
-      if(this.nameSortToggle){
+      if (this.nameSortToggle) {
         this.nameSortToggle = false;
       } else {
         this.nameSortToggle = true;
@@ -96,7 +102,7 @@ export default {
           if (aName === bName) {
             return bTimeStamp - aTimeStamp;
           }
-          if(this.nameSortToggle){
+          if (this.nameSortToggle) {
             return aName.localeCompare(bName);
           }
           return bName.localeCompare(aName);
@@ -109,22 +115,30 @@ export default {
       this.dateSortToggle = false;
       this.sortByDate();
     },
+    updateDocumentsWithLength(targetDoc){
+      const { VUE_APP_DOCUMENTS_SIZE } = process.env;
+      this.documentsLength = targetDoc.length;
+      this.updateDocuments(targetDoc, 0, VUE_APP_DOCUMENTS_SIZE);
+    }
   },
   async mounted() {
     const pattern = /\.pdf$|\.docx$/;
-    const { VUE_APP_DOCUMENTS_ENDPOINT, VUE_APP_DOCUMENTS_SIZE } = process.env;
+    const { VUE_APP_DOCUMENTS_ENDPOINT } = process.env;
     try {
       const request = await fetch(VUE_APP_DOCUMENTS_ENDPOINT);
       const { documents } = await request.json();
 
       const filteredDocs = documents.filter(({ name }) => pattern.test(name));
 
-      this.documentsLength = filteredDocs.length;
-      this.updateDocuments(filteredDocs, 0, VUE_APP_DOCUMENTS_SIZE);
+      this.updateDocumentsWithLength(filteredDocs)
+
       eventBus.$on("updatingPages", ({ start, end }) => {
         this.updateDocuments(filteredDocs, start, end);
       });
 
+      eventBus.$on("resetDocuments", () => {
+        this.updateDocumentsWithLength(filteredDocs);
+      });
       //Date picker Filters
       eventBus.$on("filter", ({ startTimestamp, endTimestamp }) => {
         const filteredByForm = documents.filter(({ date }) => {
@@ -133,8 +147,7 @@ export default {
             dateTimestamp >= startTimestamp && dateTimestamp <= endTimestamp
           );
         });
-        this.documentsLength = filteredByForm.length;
-        this.updateDocuments(filteredByForm, 0, VUE_APP_DOCUMENTS_SIZE);
+        this.updateDocumentsWithLength(filteredByForm)
       });
     } catch (error) {
       this.responseError = error;

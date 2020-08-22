@@ -6,16 +6,15 @@
           id="sort_by_name"
           role="button"
           class="wrapper-title documents-title"
-          @click="sortByName"
         >
-          Document name
+          <span class="documents-title-trigger" @click="sortByName">Document name</span>
           <FontAwesomeIcon
             v-if="sortedBy === 'documentName'"
             :icon="['fas', `${nameSortToggle ? 'caret-up' : 'caret-down'}`]"
           />
         </h2>
-        <h2 role="button" class="wrapper-title documents-title" @click="sortByDate">
-          Date
+        <h2 role="button" class="wrapper-title documents-title">
+          <span class="documents-title-trigger" @click="sortByDate">Date</span>
           <FontAwesomeIcon
             v-if="sortedBy === 'date'"
             :icon="['fas', `${dateSortToggle ? 'caret-down' : 'caret-up'}`]"
@@ -168,6 +167,8 @@ export default {
     &:first-of-type
       flex-basis: 75%
       max-width: 75%
+    &-trigger
+      margin-right: 5px
 .no-docs-text
   @media(max-width: 768px)
     text-align: right
